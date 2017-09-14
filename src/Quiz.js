@@ -6,14 +6,28 @@ class Quiz extends Component {
 		super(props);
 
 		let riddle = this.playGame();
+		let correct = false;
+		let  gameOver = false;
 
-		this.state = {riddle};
+		this.state = {riddle, correct, gameOver};
 
 		this.renderOptions = this.renderOptions.bind(this);
+		this.checkResults = this.checkResults.bind(this);
 	}
 
 	randomNumber(min, max) {
 		return Math.floor(Math.random() * (max-min+1)) +min;
+	}
+
+	checkResults(option) {
+		console.log('checkResults called ' +option);
+		if(this.state.riddle.answer === option) {
+			console.log('correct answer');
+			this.setState({correct: true, gameOver: true});
+			} else {
+				console.log('wrong answer');
+				this.setState({correct: false, gameOver: true});
+			}
 	}
 
 	generateRandomOptions(sum) {
@@ -64,7 +78,7 @@ class Quiz extends Component {
 		return(
 			<div className="options">
 				{this.state.riddle.resultsArray.map((option, i) =>
-					<QuizOptions option={option} key={i}/>
+					<QuizOptions option={option} key={i} checkResults={(option) => this.checkResults(option)}/>
 					)}
 			</div>
 			);
@@ -76,6 +90,8 @@ class Quiz extends Component {
 				<p className="question">What is the sum of <span className="text-info">{this.state.riddle.field1}</span> and <span className="text-info">{this.state.riddle.field2}</span>?</p>
 				{this.renderOptions()}
 				</div>
+				Correct: {this.state.correct ? "True" : "False"}<br/>
+				GameOver: {this.state.gameOver ? "True" : "False"}
 				<div className="play-again">
 					<a className="button">Play Again</a>
 				</div>
